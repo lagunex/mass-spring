@@ -3,7 +3,7 @@
 <head> 
 	<meta charset="UTF-8" />
 	<title>Mass-Spring Animation</title>
-	<script type="text/javascript" src="../phaser/build/phaser.js"></script>
+	<script type="text/javascript" src="js/phaser.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -24,58 +24,61 @@ function preload() {
 }
 
 var masses;
-var walls;
+var Walls;
 var springs;
 var cursors;
+var wallL, wallR;
+var mass1;
+var spr1;
 
 function create() {
     game.stage.backgroundColor = '#ffffff';
     //game.transparent = true;
 
     //  We're going to be using physics, so enable the Arcade Physics system
-    game.physics.startSystem(Phaser.Physics.P2);
+    game.physics.startSystem(Phaser.Physics.P2JS);
  
     //  A simple background for our game
     //game.add.sprite(0, 0, 'sky');
  
-    //  The walls group contains the ground and the 2 ledges we can jump on
-    walls = game.add.group();
- 
-    //  We will enable physics for any object that is created in this group
-    walls.enableBody = true;
+    //  The Walls group contains the ground and the 2 ledges we can jump on
+    Walls = game.add.group();
+    Walls.enableBody = true;
+    Walls.physicsBodyType = Phaser.Physics.P2JS;
  
     // Here we create the ground.
-    var wallL = walls.create(10, game.world.height/2 - 32, 'wall');
+    wallL = Walls.create(10, game.world.height/2 - 32, 'wall');
+    //wallL.body.immovable = true;
  
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    //ground.scale.setTo(2, 2);
- 
-    //  This stops it from falling away when you jump on it
-    wallL.body.immovable = true;
  
     //  Now let's create two ledges
-    wallR = walls.create(game.world.width - 10 - 32, game.world.height/2 - 32, 'wall');
+    wallR = Walls.create(game.world.width - 10 - 32, game.world.height/2 - 32, 'wall');
     wallR.body.immovable = true;
     wallR.scale.x = -1;
  
     // The player and its settings
     masses = game.add.group();
+    masses.enableBody = true;
+    masses.physicsBodyType = Phaser.Physics.P2JS;
     mass1 = masses.create(game.world.width/2 - 32, game.world.height/2 - 16, 'mass');
  
     //  We need to enable physics on the player
-    masses.enableBody = true;
  
     //  Player physics properties. Give the little guy a slight bounce.
-    var springs = game.add.group();
-    var spr1 = game.physics.p2.createSpring(wallL,wallR,100,50,0,null,null,[32,32],[0,16]);
- 
+    springs = game.add.group();
+    spr1 = game.physics.p2.createSpring(wallL,mass1,10,50,0,null,null,[32,32],[0,16]);
+ 	
+ 	mass1.body.velocity = [-1,2];
+
+    cursors = game.input.keyboard.createCursorKeys();
 }
 
 function update() {
+	wallL.body.moveRight(10);
  
     //  Collide the player and the stars with the platforms
-    game.physics.arcade.collide(masses, masses);
-	game.physics.arcade.collide(masses, walls);
+//    game.physics.arcade.collide(masses, masses);
+//	game.physics.arcade.collide(masses, Walls);
 
 }
 
