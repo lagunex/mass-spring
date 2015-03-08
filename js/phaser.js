@@ -85315,7 +85315,7 @@ Phaser.Physics.P2.prototype = {
     */
     addBody: function (body) {
 
-        if (body.world)
+        if (body.data.world)
         {
             return false;
         }
