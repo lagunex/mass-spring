@@ -1,23 +1,19 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function preload() {
-
     game.load.image('mass', 'assets/mass.png');
     game.load.image('wall', 'assets/fixed_v.png');
     game.load.image('spring', 'assets/spring.png');
-
 }
 
 var masses;
-var Walls;
-var Springs;
+var walls;
 var cursors;
 var wallL, wallR;
 var mass1, mass2, mass3;
 var framenum;
 var frameText;
 var spr1, spr2, spr3, spr4;
-var Spr1, Spr2, Spr3, Spr4;
 var rl,st,dp;
 
 function create() {
@@ -27,19 +23,19 @@ function create() {
     //  We're going to be using physics, so enable the P2JS Physics system
     game.physics.startSystem(Phaser.Physics.P2JS);
 
-    //  The Walls group contains the fixed walls
-    Walls = game.add.group();
-    Walls.enableBody = true;
-    Walls.physicsBodyType = Phaser.Physics.P2JS;
+    //  The walls group contains the fixed walls
+    walls = game.add.group();
+    walls.enableBody = true;
+    walls.physicsBodyType = Phaser.Physics.P2JS;
 
     // Here we create the left wall.
-    wallL = Walls.create(26, game.world.height/2, 'wall');
+    wallL = walls.create(26, game.world.height/2, 'wall');
     wallL.body.immovable = true;
     wallL.body.mass = 1e50;
     wallL.body.fixedRotation = true;
 
     //  Now let's create the right wall
-    wallR = Walls.create(game.world.width - 26, game.world.height/2, 'wall');
+    wallR = walls.create(game.world.width - 26, game.world.height/2, 'wall');
     wallR.body.immovable = true;
     wallR.scale.x = -1;
     wallR.body.mass = 1e50;
@@ -61,7 +57,6 @@ function create() {
     spr2 = game.physics.p2.createSpring(mass1,mass2,rl,st,dp,null,null,[.5,0],[-.5,0]);
     spr3 = game.physics.p2.createSpring(mass2,mass3,rl,st,dp,null,null,[.5,0],[-.5,0]);
     spr4 = game.physics.p2.createSpring(mass3,wallR,rl,st,dp,null,null,[.5,0],[-.5,0]);
-    //Spr1 = Springs.create(wallL.x+16+64,game.world.height/2,'spring');
 
     cursors = game.input.keyboard.createCursorKeys();
     framenum = 0;
@@ -74,21 +69,19 @@ function update() {
 
     //  Handle collisions
     game.physics.arcade.collide(masses, masses);
-	game.physics.arcade.collide(masses, Walls);
+	game.physics.arcade.collide(masses, walls);
 
     //  Move the mass in the middle
-    dr = 5;
+    var dr = 5;
     if (cursors.left.isDown)
     {
         //  Move to the left
         mass2.body.x -= dr;
-
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
         mass2.body.x += dr;
-
     }
     else if (cursors.up.isDown)
     {
@@ -100,5 +93,4 @@ function update() {
         //  Move down
         mass2.body.y += dr;
     }
-
 }
